@@ -9,7 +9,7 @@ var User = require('./UserModel');
 var Exercise = require('./ExerciseModel');
 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://laolao:laolao123@heaventask.com/sailao')
+mongoose.connect('mongodb://laolao:laolao123@heaventask.com/sailao', { useNewUrlParser: true, useUnifiedTopology: true })
 
 app.use(cors())
 
@@ -89,10 +89,27 @@ function formatDate(date) {
 }
 
 app.get('/api/exercise/log', (req, res) => {
+    var matches = {};
+    var options = {};
+    var limit = req.query.limit;
+    var from = req.query.from;
+    var to = req.query.to;
+    if(limit){
+        options = {...options, limit: limit}
+    }
+    if(from && to){
+        matches = {
+            ...matches, date: {
+                "$gte": new Date(from), "$lt": new Date(to)
+            }
+        }
+    }
     User.findById(req.query.userId).
-    select('_id, username log').
-    populate({path: 'log', select:'description duration date'}).
+    populate({path: 'log', select:'description duration date', options: options, match: matches}).
     exec((err, user)=>{
+        if(!user){
+            res.json('user not found')
+        }
         res.json({
             _id: user._id,
             username: user.username,
