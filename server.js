@@ -34,9 +34,9 @@ app.post('/api/exercise/new-user', (req, res)=> {
 })
 
 app.get('/api/exercise/users', (req, res)=> {
-    User.find({}, (err, data)=> {
-        if(err) console.log(err);
-
+    User.find({},{select: '_id username'}).
+    select('username _id').
+    then(data=> {
         res.json(data);
     })
 })
