@@ -6,7 +6,7 @@ const cors = require('cors')
 
 const mongoose = require('mongoose')
 var User = require('./UserModel');
-var Exercise = require('./exerciseModel');
+var Exercise = require('./ExerciseModel');
 
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://laolao:laolao123@heaventask.com/sailao')
